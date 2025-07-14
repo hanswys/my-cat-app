@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import './App.css';
-
-const CAT_API_URL = 'https://cataas.com/cat?json=true';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import "./App.css";
+import TiltedCard from "./TiltedCard";
 
 function App() {
   const [cats, setCats] = useState([]);
@@ -11,20 +10,18 @@ function App() {
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    const fetchCats = async () => {
-      const fetchedCats = [];
+    const fetchCats = () => {
+      const urls = [];
       for (let i = 0; i < 10; i++) {
-        const res = await fetch(CAT_API_URL);
-        const data = await res.json();
-        fetchedCats.push(`https://cataas.com${data.url}`);
+        urls.push(`https://cataas.com/cat?${Date.now()}-${i}`); // Prevent caching
       }
-      setCats(fetchedCats);
+      setCats(urls);
     };
     fetchCats();
   }, []);
 
   const handleSwipe = (direction) => {
-    if (direction === 'right') {
+    if (direction === "right") {
       setLikedCats([...likedCats, cats[index]]);
     }
     if (index + 1 < cats.length) {
@@ -57,26 +54,36 @@ function App() {
               key={cats[index]}
               src={cats[index]}
               alt="Cat"
-              className="cat-card"
-              initial={{ x: 300, opacity: 0 }}
+              initial={{ x: 0, opacity: 1 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -300, opacity: 0 }}
+              exit={{
+                x: cats[index] ? (cats[index] === likedCats[likedCats.length - 1] ? 300 : -300) : 0,
+                opacity: 0
+              }}
               drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={1}
               onDragEnd={(e, info) => {
                 if (info.offset.x > 100) {
-                  handleSwipe('right');
+                  handleSwipe("right");
                 } else if (info.offset.x < -100) {
-                  handleSwipe('left');
+                  handleSwipe("left");
                 }
+              }}
+              style={{
+                width: "300px",
+                height: "300px",
+                borderRadius: "15px",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+                background: "#fff",
+                cursor: "grab"
               }}
             />
           )}
         </AnimatePresence>
       </div>
       <div className="buttons">
-        <button onClick={() => handleSwipe('left')}>Dislike</button>
-        <button onClick={() => handleSwipe('right')}>Like</button>
+        <button onClick={() => handleSwipe("left")}>Dislike</button>
+        <button onClick={() => handleSwipe("right")}>Like</button>
       </div>
     </div>
   );
