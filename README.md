@@ -2,6 +2,7 @@
 # Paws & Preference Website - Netizen Experience Project
 
 **Paws & Preference Website** is an app that simulates a tinder app but with cats 
+<img width="2940" height="1912" alt="image" src="https://github.com/user-attachments/assets/e67aa1d5-1453-4c62-bf7a-4aec17124b4f" />
 
 ## Features
 - View stack of cat images
