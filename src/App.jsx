@@ -4,6 +4,8 @@ import "./App.css";
 import IconButton from "@mui/material/IconButton";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import BounceCards from './BounceCards';
+import ChromaGrid from './ChromaGrid';
 
 function App() {
   const [cats, setCats] = useState([]);
@@ -75,10 +77,96 @@ function App() {
         style={{ minHeight: "100vh" }}
       >
         <h2>You liked {likedCats.length} cat(s)!</h2>
-        <div className="liked-cats">
-          {likedCats.map((cat, i) => (
-            <img key={i} src={cat} alt={`Liked Cat ${i}`} />
-          ))}
+        <div
+          style={{
+            display: "flex",
+            gap: "2rem",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            width: "100vw",
+            maxWidth: "1200px",
+            margin: "0 auto"
+          }}
+        >
+          <div
+            style={{
+              width: 400,
+              height: 400,
+              minWidth: 400,
+              maxWidth: 400,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            <h3 style={{ textAlign: "center" }}>Liked Cats</h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gridTemplateRows: "1fr 1fr",
+                gap: "1rem",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              {likedCats.map((cat, i) => (
+                <img
+                  key={i}
+                  src={cat}
+                  alt={`Liked Cat ${i + 1}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "15px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    border: "3px solid #10B981"
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          <div
+            style={{
+              width: 400,
+              height: 400,
+              minWidth: 400,
+              maxWidth: 400,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            <h3 style={{ textAlign: "center" }}>Disliked Cats</h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gridTemplateRows: "1fr 1fr",
+                gap: "1rem",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              {cats.filter(cat => !likedCats.includes(cat)).map((cat, i) => (
+                <img
+                  key={i}
+                  src={cat}
+                  alt={`Disliked Cat ${i + 1}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "15px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    border: "3px solid #EF4444"
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </motion.div>
     );
