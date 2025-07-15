@@ -7,7 +7,6 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-
 function App() {
   const [cats, setCats] = useState([]);
   const [index, setIndex] = useState(0);
@@ -46,30 +45,29 @@ function App() {
     }
   };
 
-const handleSwipe = (direction) => {
-  setSwipeDirection(direction);
-  if (direction === "right") {
-    setLikeButtonActive(true); // trigger like button animation
-    setLikedCats([...likedCats, cats[index]]);
-    setBgFlash("rainbow");
-    playLikeSound();
-  } else if (direction === "left") {
-    setDislikeButtonActive(true); // trigger dislike button animation
-    setBgFlash("red");
-    playDislikeSound();
-  }
-  setTimeout(() => {
-    if (index + 1 < cats.length) {
-      setIndex(index + 1);
-    } else {
-      setFinished(true);
+  const handleSwipe = (direction) => {
+    setSwipeDirection(direction);
+    if (direction === "right") {
+      setLikeButtonActive(true); // trigger like button animation
+      setLikedCats([...likedCats, cats[index]]);
+      setBgFlash("rainbow");
+      playLikeSound();
+    } else if (direction === "left") {
+      setDislikeButtonActive(true); // trigger dislike button animation
+      setBgFlash("red");
+      playDislikeSound();
     }
-    setSwipeDirection(null);
-    setBgFlash(null);
-    setLikeButtonActive(false);      // reset like button animation
-    setDislikeButtonActive(false);   // reset dislike button animation
-  }, 400);
-};
+    setTimeout(() => {
+      if (index + 1 < cats.length) {
+        setIndex(index + 1);
+      } else {
+        setFinished(true);
+      }
+      setBgFlash(null);
+      setLikeButtonActive(false); // reset like button animation
+      setDislikeButtonActive(false); // reset dislike button animation
+    }, 400);
+  };
 
   // Animation variants for background
   const bgVariants = {
@@ -148,7 +146,10 @@ const handleSwipe = (direction) => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, color: "#10B981" }}>
+            <Typography
+              variant="h5"
+              sx={{ mb: 2, fontWeight: 700, color: "#10B981" }}
+            >
               Liked Cats
             </Typography>
             <Box
@@ -160,7 +161,10 @@ const handleSwipe = (direction) => {
               }}
             >
               {likedCats.length === 0 && (
-                <Typography variant="body1" sx={{ gridColumn: "span 2", color: "#aaa" }}>
+                <Typography
+                  variant="body1"
+                  sx={{ gridColumn: "span 2", color: "#aaa" }}
+                >
                   No cats liked 😿
                 </Typography>
               )}
@@ -208,7 +212,10 @@ const handleSwipe = (direction) => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, color: "#EF4444" }}>
+            <Typography
+              variant="h5"
+              sx={{ mb: 2, fontWeight: 700, color: "#EF4444" }}
+            >
               Disliked Cats
             </Typography>
             <Box
@@ -220,7 +227,10 @@ const handleSwipe = (direction) => {
               }}
             >
               {cats.filter((cat) => !likedCats.includes(cat)).length === 0 && (
-                <Typography variant="body1" sx={{ gridColumn: "span 2", color: "#aaa" }}>
+                <Typography
+                  variant="body1"
+                  sx={{ gridColumn: "span 2", color: "#aaa" }}
+                >
                   No cats disliked 😺
                 </Typography>
               )}
@@ -347,73 +357,90 @@ const handleSwipe = (direction) => {
             </Typography>
           </Box>
           <div
-            className="card-container"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100vw",
-              height: "60vh",
-              position: "relative",
-            }}
-          >
-            <AnimatePresence>
-              {cats[index] && (
-                <motion.img
-                  key={cats[index]}
-                  src={cats[index]}
-                  alt="Cat"
-                  initial={{
-                    x:
-                      swipeDirection === "right"
-                        ? window.innerWidth
-                        : swipeDirection === "left"
-                        ? -window.innerWidth
-                        : 0,
-                    opacity: 0,
-                  }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{
-                    x:
-                      swipeDirection === "right"
-                        ? window.innerWidth
-                        : swipeDirection === "left"
-                        ? -window.innerWidth
-                        : 0,
-                    opacity: 0,
-                  }}
-                  drag="x"
-                  dragElastic={1}
-                  onDrag={(e, info) => setDragX(info.point.x - window.innerWidth / 2)}
-                  onDragEnd={(e, info) => {
-                    setDragX(0);
-                    if (info.offset.x > 100) {
-                      handleSwipe("right");
-                    } else if (info.offset.x < -100) {
-                      handleSwipe("left");
-                    }
-                  }}
-                  style={{
-                    width: "80vw",
-                    height: "80vh",
-                    maxWidth: "500px",
-                    maxHeight: "500px",
-                    borderRadius: "25px",
-                    background: "#fff",
-                    cursor: "grab",
-                    objectFit: "cover",
-                    boxShadow:
-                      dragX > 60
-                        ? "0 0 32px 8px #10B98188"
-                        : dragX < -60
-                        ? "0 0 32px 8px #EF444488"
-                        : "0 8px 32px rgba(0,0,0,0.25)",
-                    transition: "box-shadow 0.2s",
-                  }}
-                />
-              )}
-            </AnimatePresence>
-          </div>
+  className="card-container"
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100vw",
+    height: "60vh",
+    position: "relative",
+  }}
+>
+  <AnimatePresence>
+    {/* Next card (underneath) */}
+    {cats[index + 1] && (
+      <motion.img
+        key={cats[index + 1]}
+        src={cats[index + 1]}
+        alt="Next Cat"
+        initial={{ scale: 0.9, opacity: 0.5 }}
+        animate={{ scale: 0.9, opacity: 0.5 }}
+        style={{
+          width: "80vw",
+          height: "80vh",
+          maxWidth: "500px",
+          maxHeight: "500px",
+          borderRadius: "25px",
+          background: "#fff",
+          objectFit: "cover",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+          position: "absolute",
+          zIndex: 1,
+        }}
+      />
+    )}
+    {/* Current card */}
+    {cats[index] && (
+      <motion.img
+        key={cats[index]}
+        src={cats[index]}
+        alt="Cat"
+        initial={{ x: 0, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{
+          x:
+            swipeDirection === "right"
+              ? window.innerWidth
+              : swipeDirection === "left"
+              ? -window.innerWidth
+              : 0,
+          opacity: 0,
+        }}
+        drag="x"
+        dragElastic={1}
+        onDrag={(e, info) => setDragX(info.point.x - window.innerWidth / 2)}
+        onDragEnd={(e, info) => {
+          setDragX(0);
+          if (info.offset.x > 100) {
+            handleSwipe("right");
+          } else if (info.offset.x < -100) {
+            handleSwipe("left");
+          }
+        }}
+        style={{
+          width: "80vw",
+          height: "80vh",
+          maxWidth: "500px",
+          maxHeight: "500px",
+          borderRadius: "25px",
+          background: "#fff",
+          cursor: "grab",
+          objectFit: "cover",
+          boxShadow:
+            dragX > 60
+              ? "0 0 32px 8px #10B98188"
+              : dragX < -60
+              ? "0 0 32px 8px #EF444488"
+              : "0 8px 32px rgba(0,0,0,0.25)",
+          transition: "box-shadow 0.2s",
+          position: "absolute",
+          zIndex: 2,
+        }}
+      />
+    )}
+  </AnimatePresence>
+</div>
           <div
             className="buttons"
             style={{
@@ -424,7 +451,11 @@ const handleSwipe = (direction) => {
             }}
           >
             <motion.div
-              animate={dislikeButtonActive ? { scale: 1.8, rotate: -20 } : { scale: 1, rotate: 0 }}
+              animate={
+                dislikeButtonActive
+                  ? { scale: 1.8, rotate: -20 }
+                  : { scale: 1, rotate: 0 }
+              }
               transition={{ type: "spring", stiffness: 300 }}
               whileTap={{ scale: 1.8, rotate: -20 }}
             >
@@ -439,7 +470,11 @@ const handleSwipe = (direction) => {
               </IconButton>
             </motion.div>
             <motion.div
-              animate={likeButtonActive ? { scale: 1.8, rotate: 20 } : { scale: 1, rotate: 0 }}
+              animate={
+                likeButtonActive
+                  ? { scale: 1.8, rotate: 20 }
+                  : { scale: 1, rotate: 0 }
+              }
               transition={{ type: "spring", stiffness: 300 }}
               whileTap={{ scale: 1.8, rotate: 20 }}
             >
