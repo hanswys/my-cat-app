@@ -15,6 +15,7 @@
 - Dynamic button effects when liking and disliking 
 - Sound effects when liking and disliking 
 - Glow border when dragging 
+- Progress Indicator for how many cats left
 - Background effects when liking and disliking 
 - Grid view of the liked and disliked cats 
 - Play again button
