@@ -16,8 +16,8 @@ function App() {
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [bgFlash, setBgFlash] = useState(null);
   const [dragX, setDragX] = useState(0);
-
-  // Refs for audio
+  const [likeButtonActive, setLikeButtonActive] = useState(false);
+  const [dislikeButtonActive, setDislikeButtonActive] = useState(false);
   const likeSoundRef = useRef(null);
   const dislikeSoundRef = useRef(null);
 
@@ -46,26 +46,30 @@ function App() {
     }
   };
 
-  const handleSwipe = (direction) => {
-    setSwipeDirection(direction);
-    if (direction === "right") {
-      setLikedCats([...likedCats, cats[index]]);
-      setBgFlash("rainbow");
-      playLikeSound();
-    } else if (direction === "left") {
-      setBgFlash("red");
-      playDislikeSound();
+const handleSwipe = (direction) => {
+  setSwipeDirection(direction);
+  if (direction === "right") {
+    setLikeButtonActive(true); // trigger like button animation
+    setLikedCats([...likedCats, cats[index]]);
+    setBgFlash("rainbow");
+    playLikeSound();
+  } else if (direction === "left") {
+    setDislikeButtonActive(true); // trigger dislike button animation
+    setBgFlash("red");
+    playDislikeSound();
+  }
+  setTimeout(() => {
+    if (index + 1 < cats.length) {
+      setIndex(index + 1);
+    } else {
+      setFinished(true);
     }
-    setTimeout(() => {
-      if (index + 1 < cats.length) {
-        setIndex(index + 1);
-      } else {
-        setFinished(true);
-      }
-      setSwipeDirection(null);
-      setBgFlash(null);
-    }, 400); // Slightly longer for visible flash
-  };
+    setSwipeDirection(null);
+    setBgFlash(null);
+    setLikeButtonActive(false);      // reset like button animation
+    setDislikeButtonActive(false);   // reset dislike button animation
+  }, 400);
+};
 
   // Animation variants for background
   const bgVariants = {
@@ -95,18 +99,34 @@ function App() {
 
   if (finished) {
     return (
-      
       <motion.div
         className="app"
         initial="initial"
         animate="initial"
-        style={{ minHeight: "100vh" }}
+        style={{ minHeight: "100vh", padding: "2rem 0" }}
       >
-        <h2>You liked {likedCats.length} cat(s)!</h2>
-        <div
-          style={{
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h2"
+            align="center"
+            sx={{
+              fontWeight: 900,
+              background: "linear-gradient(90deg, #10B981, #3B82F6, #F59E42)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textShadow: "0 2px 12px rgba(59,130,246,0.15)",
+              letterSpacing: 2,
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3.5rem" },
+              userSelect: "none",
+            }}
+          >
+            You liked {likedCats.length} cat{likedCats.length !== 1 && "s"}!
+          </Typography>
+        </Box>
+        <Box
+          sx={{
             display: "flex",
-            gap: "2rem",
+            gap: { xs: 2, md: 4 },
             flexWrap: "wrap",
             justifyContent: "center",
             alignItems: "flex-start",
@@ -115,87 +135,152 @@ function App() {
             margin: "0 auto",
           }}
         >
-          <div
-            style={{
-              width: 400,
-              height: 400,
-              minWidth: 400,
-              maxWidth: 400,
+          <Box
+            sx={{
+              width: { xs: 300, sm: 400 },
+              minHeight: 400,
+              bgcolor: "#f9fafb",
+              borderRadius: 4,
+              boxShadow: 3,
+              p: 2,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
             }}
           >
-            <h3 style={{ textAlign: "center" }}>Liked Cats</h3>
-            <div
-              style={{
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, color: "#10B981" }}>
+              Liked Cats
+            </Typography>
+            <Box
+              sx={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gridTemplateRows: "1fr 1fr",
-                gap: "1rem",
+                gap: 2,
                 width: "100%",
-                height: "100%",
               }}
             >
+              {likedCats.length === 0 && (
+                <Typography variant="body1" sx={{ gridColumn: "span 2", color: "#aaa" }}>
+                  No cats liked 😿
+                </Typography>
+              )}
               {likedCats.map((cat, i) => (
-                <img
+                <Box
                   key={i}
-                  src={cat}
-                  alt={`Liked Cat ${i + 1}`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "15px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                  sx={{
+                    borderRadius: 3,
+                    overflow: "hidden",
+                    boxShadow: 2,
                     border: "3px solid #10B981",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                      boxShadow: 6,
+                    },
+                    aspectRatio: "1/1",
+                    bgcolor: "#fff",
                   }}
-                />
-              ))}
-            </div>
-          </div>
-          <div
-            style={{
-              width: 400,
-              height: 400,
-              minWidth: 400,
-              maxWidth: 400,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <h3 style={{ textAlign: "center" }}>Disliked Cats</h3>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gridTemplateRows: "1fr 1fr",
-                gap: "1rem",
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              {cats
-                .filter((cat) => !likedCats.includes(cat))
-                .map((cat, i) => (
+                >
                   <img
-                    key={i}
                     src={cat}
-                    alt={`Disliked Cat ${i + 1}`}
+                    alt={`Liked Cat ${i + 1}`}
                     style={{
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
-                      borderRadius: "15px",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                      border: "3px solid #EF4444",
+                      display: "block",
                     }}
                   />
+                </Box>
+              ))}
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              width: { xs: 300, sm: 400 },
+              minHeight: 400,
+              bgcolor: "#f9fafb",
+              borderRadius: 4,
+              boxShadow: 3,
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: 700, color: "#EF4444" }}>
+              Disliked Cats
+            </Typography>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 2,
+                width: "100%",
+              }}
+            >
+              {cats.filter((cat) => !likedCats.includes(cat)).length === 0 && (
+                <Typography variant="body1" sx={{ gridColumn: "span 2", color: "#aaa" }}>
+                  No cats disliked 😺
+                </Typography>
+              )}
+              {cats
+                .filter((cat) => !likedCats.includes(cat))
+                .map((cat, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      borderRadius: 3,
+                      overflow: "hidden",
+                      boxShadow: 2,
+                      border: "3px solid #EF4444",
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: 6,
+                      },
+                      aspectRatio: "1/1",
+                      bgcolor: "#fff",
+                    }}
+                  >
+                    <img
+                      src={cat}
+                      alt={`Disliked Cat ${i + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  </Box>
                 ))}
-            </div>
-          </div>
-        </div>
+            </Box>
+          </Box>
+        </Box>
+        <Box sx={{ mt: 5, display: "flex", justifyContent: "center" }}>
+          <button
+            onClick={() => {
+              setIndex(0);
+              setLikedCats([]);
+              setFinished(false);
+            }}
+            style={{
+              padding: "1rem 2.5rem",
+              fontSize: "1.25rem",
+              fontWeight: 700,
+              borderRadius: "2rem",
+              border: "none",
+              background: "linear-gradient(90deg, #10B981, #3B82F6, #F59E42)",
+              color: "#fff",
+              boxShadow: "0 2px 12px rgba(59,130,246,0.15)",
+              cursor: "pointer",
+              transition: "background 0.2s, transform 0.2s",
+            }}
+          >
+            Play Again
+          </button>
+        </Box>
       </motion.div>
     );
   }
@@ -339,29 +424,31 @@ function App() {
             }}
           >
             <motion.div
-              whileTap={{ scale: 1.8, rotate: -20 }} // bigger scale
+              animate={dislikeButtonActive ? { scale: 1.8, rotate: -20 } : { scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 300 }}
+              whileTap={{ scale: 1.8, rotate: -20 }}
             >
               <IconButton
                 color="error"
                 size="large"
                 onClick={() => handleSwipe("left")}
                 aria-label="dislike"
-                sx={{ fontSize: 60, width: 80, height: 80 }} // increase button size
+                sx={{ fontSize: 60, width: 80, height: 80 }}
               >
                 <ThumbDownIcon fontSize="inherit" sx={{ fontSize: 60 }} />
               </IconButton>
             </motion.div>
             <motion.div
-              whileTap={{ scale: 1.8, rotate: 20 }} // bigger scale
+              animate={likeButtonActive ? { scale: 1.8, rotate: 20 } : { scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 300 }}
+              whileTap={{ scale: 1.8, rotate: 20 }}
             >
               <IconButton
                 color="success"
                 size="large"
                 onClick={() => handleSwipe("right")}
                 aria-label="like"
-                sx={{ fontSize: 60, width: 80, height: 80 }} // increase button size
+                sx={{ fontSize: 60, width: 80, height: 80 }}
               >
                 <ThumbUpIcon fontSize="inherit" sx={{ fontSize: 60 }} />
               </IconButton>
