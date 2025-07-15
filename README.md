@@ -21,12 +21,12 @@
 
 ## Core Problem Encountered and Solution
 - Problem: Initial implementation caused next card to be off centered after swiping for a split second and had a very bad rendering speed
-<Screenshot 2025-07-14 at 9.15.53 PM.png>
-
+![alt text](<Screenshot 2025-07-14 at 9.15.53 PM.png>)
 - Solution: Adopted an approach used by Tinder and other swiping platforms by pre-rendering the next card to be swiped 
 
 ## Tech Stack
 - Only frontend: React, HTML, CSS 
+
 
 
 >>>>>>> origin/main

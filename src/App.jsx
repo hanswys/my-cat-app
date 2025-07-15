@@ -31,7 +31,6 @@ function App() {
     fetchCats();
   }, []);
 
-  // Play sound effects on button click
   const playLikeSound = () => {
     if (likeSoundRef.current) {
       likeSoundRef.current.currentTime = 0;
@@ -69,7 +68,6 @@ function App() {
     }, 400);
   };
 
-  // Animation variants for background
   const bgVariants = {
     initial: { background: "#fff" },
     rainbow: {
@@ -92,7 +90,6 @@ function App() {
     },
   };
 
-  // Progress calculation
   const progress = ((index + (finished ? 1 : 0)) / cats.length) * 100;
 
   if (finished) {
