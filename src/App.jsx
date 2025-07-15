@@ -4,6 +4,8 @@ import "./App.css";
 import IconButton from "@mui/material/IconButton";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 
 function App() {
@@ -13,6 +15,7 @@ function App() {
   const [finished, setFinished] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [bgFlash, setBgFlash] = useState(null);
+  const [dragX, setDragX] = useState(0);
 
   // Refs for audio
   const likeSoundRef = useRef(null);
@@ -86,6 +89,9 @@ function App() {
       transition: { duration: 0.4 },
     },
   };
+
+  // Progress calculation
+  const progress = ((index + (finished ? 1 : 0)) / cats.length) * 100;
 
   if (finished) {
     return (
@@ -199,6 +205,29 @@ function App() {
       <audio ref={likeSoundRef} src="./public/like.mp3" />
       <audio ref={dislikeSoundRef} src="./public/dislike.mp3" />
 
+      {/* Progress Bar */}
+      <div
+        style={{
+          height: 8,
+          width: "100vw",
+          background: "#eee",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 10,
+        }}
+        aria-label="progress"
+      >
+        <div
+          style={{
+            height: "100%",
+            width: `${progress}%`,
+            background: "linear-gradient(90deg, #10B981, #3B82F6, #F59E42)",
+            transition: "width 0.3s",
+          }}
+        />
+      </div>
+
       <motion.div
         className="app"
         variants={bgVariants}
@@ -214,9 +243,24 @@ function App() {
             alignItems: "center",
           }}
         >
-          <h1 style={{ marginBottom: "1rem", marginTop: 0, fontSize: "2.5rem" }}>
-            Do You Like This Cat?
-          </h1>
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Typography
+              variant="h2"
+              align="center"
+              sx={{
+                fontWeight: 800,
+                background: "linear-gradient(90deg, #10B981, #3B82F6, #F59E42)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                textShadow: "0 2px 12px rgba(59,130,246,0.15)",
+                letterSpacing: 2,
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                userSelect: "none",
+              }}
+            >
+              Do You Like This Cat?
+            </Typography>
+          </Box>
           <div
             className="card-container"
             style={{
@@ -225,6 +269,7 @@ function App() {
               alignItems: "center",
               width: "100vw",
               height: "60vh",
+              position: "relative",
             }}
           >
             <AnimatePresence>
@@ -254,7 +299,9 @@ function App() {
                   }}
                   drag="x"
                   dragElastic={1}
+                  onDrag={(e, info) => setDragX(info.point.x - window.innerWidth / 2)}
                   onDragEnd={(e, info) => {
+                    setDragX(0);
                     if (info.offset.x > 100) {
                       handleSwipe("right");
                     } else if (info.offset.x < -100) {
@@ -267,10 +314,16 @@ function App() {
                     maxWidth: "500px",
                     maxHeight: "500px",
                     borderRadius: "25px",
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
                     background: "#fff",
                     cursor: "grab",
                     objectFit: "cover",
+                    boxShadow:
+                      dragX > 60
+                        ? "0 0 32px 8px #10B98188"
+                        : dragX < -60
+                        ? "0 0 32px 8px #EF444488"
+                        : "0 8px 32px rgba(0,0,0,0.25)",
+                    transition: "box-shadow 0.2s",
                   }}
                 />
               )}
