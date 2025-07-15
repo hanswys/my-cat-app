@@ -8,7 +8,7 @@
 - Swiping and clicking feature to like and dislike
 - Summary page of liked and disliked cats
 - Pictures are called using API
-- Added media query for mobile  
+- Added media query for mobile UI/UX 
 
 ## Stretch Features
 - Seamless rendering and transitioning between cards 
@@ -21,7 +21,8 @@
 
 ## Core Problem Encountered and Solution
 - Problem: Initial implementation caused next card to be off centered after swiping for a split second and had a very bad rendering speed
-![alt text](<Screenshot 2025-07-14 at 9.15.53 PM.png>)
+![Problem](<Screenshot 2025-07-14 at 9.15.53 PM.png>)
+
 - Solution: Adopted an approach used by Tinder and other swiping platforms by pre-rendering the next card to be swiped 
 
 ## Tech Stack
