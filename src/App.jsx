@@ -4,8 +4,8 @@ import "./App.css";
 import IconButton from "@mui/material/IconButton";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import BounceCards from './BounceCards';
-import ChromaGrid from './ChromaGrid';
+import BounceCards from "./BounceCards";
+import ChromaGrid from "./ChromaGrid";
 
 function App() {
   const [cats, setCats] = useState([]);
@@ -58,14 +58,14 @@ function App() {
         "#00ffff",
         "#3300ff",
         "#ff00cc",
-        "#fff"
+        "#fff",
       ],
-      transition: { duration: 0.4 }
+      transition: { duration: 0.4 },
     },
     red: {
       background: ["#fff", "#ff0000", "#fff"],
-      transition: { duration: 0.4 }
-    }
+      transition: { duration: 0.4 },
+    },
   };
 
   if (finished) {
@@ -86,7 +86,7 @@ function App() {
             alignItems: "flex-start",
             width: "100vw",
             maxWidth: "1200px",
-            margin: "0 auto"
+            margin: "0 auto",
           }}
         >
           <div
@@ -97,7 +97,7 @@ function App() {
               maxWidth: 400,
               display: "flex",
               flexDirection: "column",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <h3 style={{ textAlign: "center" }}>Liked Cats</h3>
@@ -122,7 +122,7 @@ function App() {
                     objectFit: "cover",
                     borderRadius: "15px",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                    border: "3px solid #10B981"
+                    border: "3px solid #10B981",
                   }}
                 />
               ))}
@@ -136,7 +136,7 @@ function App() {
               maxWidth: 400,
               display: "flex",
               flexDirection: "column",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <h3 style={{ textAlign: "center" }}>Disliked Cats</h3>
@@ -150,21 +150,23 @@ function App() {
                 height: "100%",
               }}
             >
-              {cats.filter(cat => !likedCats.includes(cat)).map((cat, i) => (
-                <img
-                  key={i}
-                  src={cat}
-                  alt={`Disliked Cat ${i + 1}`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "15px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                    border: "3px solid #EF4444"
-                  }}
-                />
-              ))}
+              {cats
+                .filter((cat) => !likedCats.includes(cat))
+                .map((cat, i) => (
+                  <img
+                    key={i}
+                    src={cat}
+                    alt={`Disliked Cat ${i + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "15px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                      border: "3px solid #EF4444",
+                    }}
+                  />
+                ))}
             </div>
           </div>
         </div>
@@ -180,81 +182,105 @@ function App() {
       animate={bgFlash || "initial"}
       style={{ minHeight: "100vh" }}
     >
-      <h1>Do You Like This Cat?</h1>
-      <div className="card-container">
-        <AnimatePresence>
-          {cats[index] && (
-            <motion.img
-              key={cats[index]}
-              src={cats[index]}
-              alt="Cat"
-              initial={{
-                x:
-                  swipeDirection === "right"
-                    ? window.innerWidth
-                    : swipeDirection === "left"
-                    ? -window.innerWidth
-                    : 0,
-                opacity: 0,
-              }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{
-                x:
-                  swipeDirection === "right"
-                    ? window.innerWidth
-                    : swipeDirection === "left"
-                    ? -window.innerWidth
-                    : 0,
-                opacity: 0,
-              }}
-              drag="x"
-              dragElastic={1}
-              onDragEnd={(e, info) => {
-                if (info.offset.x > 100) {
-                  handleSwipe("right");
-                } else if (info.offset.x < -100) {
-                  handleSwipe("left");
-                }
-              }}
-              style={{
-                width: "300px",
-                height: "300px",
-                borderRadius: "15px",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
-                background: "#fff",
-                cursor: "grab",
-              }}
-            />
-          )}
-        </AnimatePresence>
-      </div>
-      <div className="buttons" style={{ marginTop: "2rem", display: "flex", justifyContent: "center", gap: "2rem" }}>
-        <motion.div
-          whileTap={{ scale: 1.2, rotate: -20 }}
-          transition={{ type: "spring", stiffness: 300 }}
+      <div style={{ width: "100vw", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <h1 style={{ marginBottom: "1rem", marginTop: 0, fontSize: "2.5rem" }}>Do You Like This Cat?</h1>
+        <div
+          className="card-container"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100vw",
+            height: "60vh",
+          }}
         >
-          <IconButton
-            color="error"
-            size="large"
-            onClick={() => handleSwipe("left")}
-            aria-label="dislike"
-          >
-            <ThumbDownIcon fontSize="inherit" />
-          </IconButton>
-        </motion.div>
-        <motion.div
-          whileTap={{ scale: 1.2, rotate: 20 }}
-          transition={{ type: "spring", stiffness: 300 }}
+          <AnimatePresence>
+            {cats[index] && (
+              <motion.img
+                key={cats[index]}
+                src={cats[index]}
+                alt="Cat"
+                initial={{
+                  x:
+                    swipeDirection === "right"
+                      ? window.innerWidth
+                      : swipeDirection === "left"
+                      ? -window.innerWidth
+                      : 0,
+                  opacity: 0,
+                }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{
+                  x:
+                    swipeDirection === "right"
+                      ? window.innerWidth
+                      : swipeDirection === "left"
+                      ? -window.innerWidth
+                      : 0,
+                  opacity: 0,
+                }}
+                drag="x"
+                dragElastic={1}
+                onDragEnd={(e, info) => {
+                  if (info.offset.x > 100) {
+                    handleSwipe("right");
+                  } else if (info.offset.x < -100) {
+                    handleSwipe("left");
+                  }
+                }}
+                style={{
+                  width: "80vw",
+                  height: "80vh",
+                  maxWidth: "500px",
+                  maxHeight: "500px",
+                  borderRadius: "25px",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+                  background: "#fff",
+                  cursor: "grab",
+                  objectFit: "cover",
+                }}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+        <div
+          className="buttons"
+          style={{
+            marginTop: "1rem", // reduced margin
+            display: "flex",
+            justifyContent: "center",
+            gap: "2rem",
+          }}
         >
-          <IconButton
-            color="success"
-            size="large"
-            onClick={() => handleSwipe("right")}
-            aria-label="like"
+          <motion.div
+            whileTap={{ scale: 1.8, rotate: -20 }} // bigger scale
+            transition={{ type: "spring", stiffness: 300 }}
           >
-            <ThumbUpIcon fontSize="inherit" />
-          </IconButton>
-        </motion.div>
+            <IconButton
+              color="error"
+              size="large"
+              onClick={() => handleSwipe("left")}
+              aria-label="dislike"
+              sx={{ fontSize: 60, width: 80, height: 80 }} // increase button size
+            >
+              <ThumbDownIcon fontSize="inherit" sx={{ fontSize: 60 }} />
+            </IconButton>
+          </motion.div>
+          <motion.div
+            whileTap={{ scale: 1.8, rotate: 20 }} // bigger scale
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <IconButton
+              color="success"
+              size="large"
+              onClick={() => handleSwipe("right")}
+              aria-label="like"
+              sx={{ fontSize: 60, width: 80, height: 80 }} // increase button size
+            >
+              <ThumbUpIcon fontSize="inherit" sx={{ fontSize: 60 }} />
+            </IconButton>
+          </motion.div>
+        </div>
       </div>
     </motion.div>
   );
